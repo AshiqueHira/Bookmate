@@ -8,8 +8,8 @@ import AuthNav from './src/nav/AuthNav';
 const App = () => {
   return (
     <NavigationContainer>
-      {/* <AppNav /> */}
-      <AuthNav/>
+      <AppNav />
+      {/* <AuthNav/> */}
     </NavigationContainer>
   )
 }

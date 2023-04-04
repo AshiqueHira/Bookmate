@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 
-const Btn = ({ title, onPress, containerStyle, titleStyle }) => {
+const Btn = ({ title, onPress, containerStyle, titleStyle, disabled }) => {
     return (
-        <View style={[styles.container, containerStyle]} >
+        <TouchableOpacity onPress={onPress} style={[styles.container, containerStyle]} disabled={disabled} >
             <Text style={[styles.title, titleStyle]} >{title}</Text>
-        </View>
+        </TouchableOpacity>
     )
 }
 
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     },
     title: {
         color: '#000000',
-        fontWeight:'700',
-        fontSize:20
+        fontWeight: '700',
+        fontSize: 20
     }
 })

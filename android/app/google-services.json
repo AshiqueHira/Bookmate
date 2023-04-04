@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "285877176980",
+    "project_id": "bookmate-cc799",
+    "storage_bucket": "bookmate-cc799.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285877176980:android:f702aaf55b0ab258218281",
+        "android_client_info": {
+          "package_name": "com.bookmate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "285877176980-cvum2tcrlr9sdajg2uc695ahb5rfl4pu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvZXCMn3CZ3EWMiAOLoLc0fuX1c4JcMF8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "285877176980-cvum2tcrlr9sdajg2uc695ahb5rfl4pu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

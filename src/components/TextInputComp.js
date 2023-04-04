@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import React from 'react'
+import { BLACK } from '../utils/Colors'
 
 const TextInputComp = ({ placeHolder, onChangeText, style }) => {
     return (
@@ -7,7 +8,7 @@ const TextInputComp = ({ placeHolder, onChangeText, style }) => {
             style={[styles.input, style]}
             placeholder={placeHolder}
             onChangeText={onChangeText}
-            placeholderTextColor='#454546'
+            placeholderTextColor='gray'
         />
     )
 }
@@ -20,5 +21,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         width: '100%',
         borderRadius: 10,
+        color: BLACK
     }
 })

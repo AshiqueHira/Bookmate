@@ -1,22 +1,25 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { CHAT_ICO, Location_ICO, Recomendation_ICO, Review_ICO } from '../utils/icons'
 import { BLACK, SEC_TEXT } from '../utils/Colors'
 import { WIDTH } from '../utils/constants'
+import { useNavigation } from '@react-navigation/native'
+import { ddmmyyy } from '../helpers/ddmmyyyy'
 
 const BookItem = ({ book }) => {
 
-    const img = 'https://cdn.pixabay.com/photo/2018/05/10/08/59/book-3387071_960_720.jpg'
+    console.log(book)
+    const navigation = useNavigation()
 
     return (
-        <View style={styles.container} >
-            <Image source={{ uri: img }} style={styles.img} />
+        <TouchableOpacity onPress={() => navigation.navigate('BookDetails')} style={styles.container} >
+            <Image source={{ uri: book.img }} style={styles.img} />
             <View style={styles.txtWrpr} >
-                <Text style={styles.date}>Novel  18.10.2022</Text>
-                <Text style={styles.title}>A Bright Ray of Darkness - Ethan Hawke</Text>
+                <Text style={styles.date}>{book?.cat}  {ddmmyyy(book?.timeStamp?.toDate())}</Text>
+                <Text style={styles.title}>{book.name}</Text>
                 <View style={styles.subWrpr}>
                     <Image style={styles.ico} source={Location_ICO} />
-                    <Text style={styles.txt}>Vadakara, Kozhikode</Text>
+                    <Text style={styles.txt}>{book.city}</Text>
                 </View>
                 <View style={styles.subWrpr}>
                     <Image style={styles.ico} source={Recomendation_ICO} />
@@ -28,7 +31,7 @@ const BookItem = ({ book }) => {
                 </View>
 
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 
@@ -63,7 +66,7 @@ const styles = StyleSheet.create({
     },
     subWrpr: {
         flexDirection: 'row',
-        marginBottom:4
+        marginBottom: 4
     },
     ico: {
         height: 15,

@@ -8,6 +8,8 @@ import NotificationScreen from '../screens/NotificationScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import { HOME_ICO, NOTIFICATION_ICO, PROFILE_ICO, SEARCH_ICO } from '../utils/icons';
 import { BLACK, SEC_BG, SEC_TEXT } from '../utils/Colors';
+import BookDetailsScreen from '../screens/BookDetailsScreen';
+import AddBookScreen from '../screens/AddBookScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -18,6 +20,8 @@ const AppNav = () => {
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="BottomNav" component={MyTabs} />
+      <Stack.Screen name="BookDetails" component={BookDetailsScreen} />
+      <Stack.Screen name="AddBook" component={AddBookScreen} />
     </Stack.Navigator>
   )
 }

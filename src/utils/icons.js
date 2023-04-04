@@ -7,6 +7,9 @@ import Home from '../assets/icons/home.png'
 import Search from '../assets/icons/search.png'
 import Notifications from '../assets/icons/bell.png'
 import Profile from '../assets/icons/profile.png'
+import Request from '../assets/icons/request.png'
+import Star from '../assets/icons/star.png'
+import AddPic from '../assets/icons/add_pic.png'
 
 export const CHAT_ICO = Chat
 export const PLUS_ICO = Plus
@@ -17,3 +20,6 @@ export const HOME_ICO = Home
 export const SEARCH_ICO = Search
 export const NOTIFICATION_ICO = Notifications
 export const PROFILE_ICO = Profile
+export const REQUEST_ICO = Request
+export const STAR_ICO = Star
+export const ADD_PIC = AddPic

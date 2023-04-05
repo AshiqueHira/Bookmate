@@ -75,7 +75,7 @@ const AddBookScreen = ({ navigation }) => {
 
     return (
         <ScrollView style={styles.container}  >
-            <Header label='Upload Book' />
+            <Header label='Upload Book' from='addBook' />
             {img ?
                 <TouchableOpacity onPress={picSelecter} style={styles.addWrpr} >
                     <Image source={{ uri: img }} style={styles.addWrpr} />
@@ -102,7 +102,7 @@ const AddBookScreen = ({ navigation }) => {
 
                 <Text style={styles.label} >Description</Text>
                 <TextInputComp value={dsc} onChangeText={(e) => setDsc(e)} />
-                <Btn title={loading ? 'Loading...' : 'Upload'} onPress={saveToDb} containerStyle={{ marginTop: 10 }} />
+                <Btn title={loading ? 'Loading...' : 'Upload'} onPress={saveToDb} disabled={loading} containerStyle={{ marginTop: 10 }} />
             </View>
         </ScrollView>
     )

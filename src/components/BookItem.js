@@ -8,11 +8,10 @@ import { ddmmyyy } from '../helpers/ddmmyyyy'
 
 const BookItem = ({ book }) => {
 
-    console.log(book)
     const navigation = useNavigation()
 
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('BookDetails')} style={styles.container} >
+        <TouchableOpacity onPress={() => navigation.navigate('BookDetails',{book})} style={styles.container} >
             <Image source={{ uri: book.img }} style={styles.img} />
             <View style={styles.txtWrpr} >
                 <Text style={styles.date}>{book?.cat}  {ddmmyyy(book?.timeStamp?.toDate())}</Text>

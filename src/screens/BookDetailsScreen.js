@@ -4,27 +4,39 @@ import Header from '../components/Header'
 import { BG, BLACK, SEC_TEXT } from '../utils/Colors'
 import { WIDTH } from '../utils/constants'
 import { Recomendation_ICO, REQUEST_ICO, STAR_ICO } from '../utils/icons'
+import { ddmmyyy } from '../helpers/ddmmyyyy'
 
-const BookDetailsScreen = () => {
-    const img = 'https://cdn.pixabay.com/photo/2018/05/10/08/59/book-3387071_960_720.jpg'
+const BookDetailsScreen = ({ route }) => {
+
+    const { email,
+        name,
+        author,
+        cat,
+        city,
+        town,
+        dsc,
+        img,
+        timeStamp
+    } = route.params.book
+
     return (
         <View style={styles.container} >
             <Header label='Bookmate' from='bookDetails' />
 
             <ScrollView>
                 <View style={styles.profWrpr} >
-                    <Image source={{ uri: img }} style={styles.profIco} />
-                    <Text style={styles.profName} >Arun K</Text>
+                    {/* <Image source={{ uri: img }} style={styles.profIco} /> */}
+                    <Text style={styles.profName} >{author}</Text>
                     <Image source={STAR_ICO} style={styles.star} />
                     <Text style={styles.profName}>210</Text>
                     <View style={{ flex: 1 }} />
-                    <Text style={styles.date}>Posted on 18.10.2022</Text>
+                    <Text style={styles.date}>Posted on {ddmmyyy(timeStamp.toDate())}</Text>
                 </View>
                 <Image source={{ uri: img }} style={styles.img} />
                 <View style={styles.wrpr} >
-                    <Text style={styles.title} >A Bright Ray of Darkness - Ethan Hawke</Text>
-                    <Text style={styles.cat} >Category: Novel  </Text>
-                    <Text style={styles.loc}>Location: Vadakara, Kozhikode</Text>
+                    <Text style={styles.title} >{name}</Text>
+                    <Text style={styles.cat} >Category: {cat}  </Text>
+                    <Text style={styles.loc}>Location: {city}</Text>
 
                     <View style={styles.subWrpr}>
                         <View>
@@ -39,7 +51,7 @@ const BookDetailsScreen = () => {
                 </View>
                 <View style={styles.wrpr2}>
                     <Text style={styles.dsc}>Description</Text>
-                    <Text style={{ color: BLACK }} >A bracing meditation on fame and celebrity, and the redemptive, healing power of art; a portrait of the ravages of disappointment and divorce; a poignant consideration</Text>
+                    <Text style={{ color: BLACK }} >{dsc}</Text>
                 </View>
             </ScrollView>
 

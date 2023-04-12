@@ -7,7 +7,7 @@ import { TextInput } from 'react-native-gesture-handler'
 
 const SearchScreen = () => {
 
-    const [books, setBooks] = useState([1, 2, 3, 4, 5, 6, 8, 6, 8,])
+    const [books, setBooks] = useState([])
 
     return (
         <View style={styles.container}>

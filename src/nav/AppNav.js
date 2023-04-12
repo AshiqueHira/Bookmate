@@ -10,6 +10,8 @@ import { HOME_ICO, NOTIFICATION_ICO, PROFILE_ICO, SEARCH_ICO } from '../utils/ic
 import { BLACK, SEC_BG, SEC_TEXT } from '../utils/Colors';
 import BookDetailsScreen from '../screens/BookDetailsScreen';
 import AddBookScreen from '../screens/AddBookScreen';
+import ChatScreen from '../screens/ChatScreen';
+import MessageScreen from '../screens/MessageScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -22,6 +24,8 @@ const AppNav = () => {
       <Stack.Screen name="BottomNav" component={MyTabs} />
       <Stack.Screen name="BookDetails" component={BookDetailsScreen} />
       <Stack.Screen name="AddBook" component={AddBookScreen} />
+      <Stack.Screen name="Chats" component={ChatScreen} />
+      <Stack.Screen name="Messages" component={MessageScreen} />
     </Stack.Navigator>
   )
 }

@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import AppNav from './src/nav/AppNav'
 import AuthNav from './src/nav/AuthNav';
 import auth from '@react-native-firebase/auth';
+import AppProvider from './src/contexts/AppProvider';
 const App = () => {
 
   const [initializing, setInitializing] = useState(true);
@@ -12,6 +13,7 @@ const App = () => {
 
   function onAuthStateChanged(user) {
     setUser(user);
+    
     if (initializing) setInitializing(false);
   }
   useEffect(() => {
@@ -22,10 +24,12 @@ const App = () => {
   if (initializing) return null;
   return (
     <NavigationContainer>
-      {user ?
-        <AppNav />
-        :
-        <AuthNav />}
+      <AppProvider>
+        {user ?
+          <AppNav />
+          :
+          <AuthNav />}
+      </AppProvider >
     </NavigationContainer>
   )
 }

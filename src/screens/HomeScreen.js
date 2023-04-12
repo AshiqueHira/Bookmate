@@ -1,14 +1,18 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import BookItem from '../components/BookItem'
 import Header from '../components/Header'
 import { BG } from '../utils/Colors'
 import firestore from '@react-native-firebase/firestore';
+import { AppContext } from '../contexts/AppProvider'
+import { useIsFocused } from '@react-navigation/native'
 
 
 const HomeScreen = () => {
 
     const [books, setBooks] = useState([])
+    const { getUser } = useContext(AppContext)
+    const isFocussed = useIsFocused()
 
     const getAllBooks = async () => {
         let tmpBooks = []
@@ -26,7 +30,8 @@ const HomeScreen = () => {
     }
     useEffect(() => {
         getAllBooks()
-    }, [])
+        getUser()
+    }, [isFocussed])
     return (
         <FlatList
             ListHeaderComponent={<Header label='Bookmate' from='home' />}

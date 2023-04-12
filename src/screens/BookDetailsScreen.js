@@ -1,10 +1,12 @@
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useContext } from 'react'
 import Header from '../components/Header'
 import { BG, BLACK, SEC_TEXT } from '../utils/Colors'
 import { WIDTH } from '../utils/constants'
 import { Recomendation_ICO, REQUEST_ICO, STAR_ICO } from '../utils/icons'
 import { ddmmyyy } from '../helpers/ddmmyyyy'
+import firestore from '@react-native-firebase/firestore';
+import { AppContext } from '../contexts/AppProvider'
 
 const BookDetailsScreen = ({ route }) => {
 
@@ -16,8 +18,40 @@ const BookDetailsScreen = ({ route }) => {
         town,
         dsc,
         img,
-        timeStamp
+        timeStamp,
+        uploadedBy
     } = route.params.book
+
+    const { user } = useContext(AppContext)
+
+    const onRequestPress = () => {
+        Alert.alert('New Request', 'Do you want to request for this book?', [
+            {
+                text: 'No',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+            },
+            { text: 'Yes', onPress: makeRequest },
+        ]);
+    }
+
+    const makeRequest = async () => {
+        await firestore()
+            .collection('Notifications')
+            .add({
+                to: uploadedBy.id,
+                from: user.id,
+                book: route.params.book,
+                status: 'send',
+                timeStamp: new Date(),
+            })
+            .then(() => {
+                console.log('Book added!');
+                Alert.alert('Request Send')
+            }).catch(() => {
+                Alert.alert('Error, Try again.')
+            })
+    }
 
     return (
         <View style={styles.container} >
@@ -43,10 +77,10 @@ const BookDetailsScreen = ({ route }) => {
                             <Image style={styles.ico} source={Recomendation_ICO} />
                             <Text style={styles.icoTxt}>226 Recommendations</Text>
                         </View>
-                        <View style={{ alignItems: 'center' }} >
+                        <TouchableOpacity onPress={onRequestPress} style={{ alignItems: 'center' }} >
                             <Image style={{ width: 30, height: 30 }} source={REQUEST_ICO} />
                             <Text style={styles.icoTxt}>Request</Text>
-                        </View>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.wrpr2}>

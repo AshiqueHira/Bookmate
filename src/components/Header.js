@@ -13,7 +13,7 @@ const Header = ({ label, from }) => {
             <TouchableOpacity onPress={() => navigation.navigate('AddBook')} >
                 <Image source={PLUS_ICO} style={styles.cpIco} />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity  onPress={() => navigation.navigate('Chats')} >
                 <Image source={CHAT_ICO} style={styles.cpIco} />
             </TouchableOpacity>
         </View>)

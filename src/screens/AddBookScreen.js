@@ -1,5 +1,5 @@
 import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Header from '../components/Header'
 import { BG, SEC_BG, SEC_TEXT } from '../utils/Colors'
 import { ADD_PIC } from '../utils/icons'
@@ -10,8 +10,12 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth';
 import Btn from '../components/Btn'
+import { AppContext } from '../contexts/AppProvider'
 
 const AddBookScreen = ({ navigation }) => {
+
+    const { user } = useContext(AppContext)
+
 
     const { email } = auth().currentUser
 
@@ -53,7 +57,7 @@ const AddBookScreen = ({ navigation }) => {
         await firestore()
             .collection('Books')
             .add({
-                email,
+                uploadedBy: user,
                 name,
                 author,
                 cat,

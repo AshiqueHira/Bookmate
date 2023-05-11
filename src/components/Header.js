@@ -1,30 +1,66 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { BLACK, SEC_BG } from '../utils/Colors'
-import { CHAT_ICO, PLUS_ICO } from '../utils/icons'
+import { CHAT_ICO, PLUS_ICO, PROFILE_EDIT_ICO } from '../utils/icons'
 import { useNavigation } from '@react-navigation/native'
+import Btn from './Btn'
+import auth from '@react-native-firebase/auth';
 
 const Header = ({ label, from }) => {
 
     const navigation = useNavigation()
+
+    const onSignOUt = () => {
+        Alert.alert('Signout', 'Do you want to Signout?', [
+            {
+                text: 'No',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+            },
+            { text: 'Yes', onPress: () => auth().signOut() },
+        ]);
+    }
 
     const ChatAndPlus = () => {
         return (<View style={styles.cpWrpr}>
             <TouchableOpacity onPress={() => navigation.navigate('AddBook')} >
                 <Image source={PLUS_ICO} style={styles.cpIco} />
             </TouchableOpacity>
-            <TouchableOpacity  onPress={() => navigation.navigate('Chats')} >
+            <TouchableOpacity onPress={() => navigation.navigate('Chats')} >
                 <Image source={CHAT_ICO} style={styles.cpIco} />
             </TouchableOpacity>
         </View>)
     }
+    const PlusAndEdit = () => {
+        return (<View style={styles.cpWrpr}>
+            <TouchableOpacity onPress={() => navigation.navigate('AddBook')} >
+                <Image source={PLUS_ICO} style={styles.cpIco} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('EditProfile')} >
+                <Image source={PROFILE_EDIT_ICO} style={styles.cpIco} />
+            </TouchableOpacity>
+        </View>)
+    }
+
+
 
     return (
         <View style={styles.container}>
             <Text style={styles.label} >{label}</Text>
             {
-               ( from == 'home' || from == 'search' || from == 'bookDetails') && <ChatAndPlus />
+                (from == 'home' || from == 'search' || from == 'bookDetails') && <ChatAndPlus />
+
             }
+            {
+                (from == 'profile') && <PlusAndEdit />
+
+            }
+            {from == 'settings' && <Btn
+                title={'Sign Out'}
+                containerStyle={{ width: 80, }}
+                titleStyle={{ fontSize: 10 }}
+                onPress={onSignOUt}
+            />}
         </View>
     )
 }

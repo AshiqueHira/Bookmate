@@ -5,12 +5,14 @@ import { BLACK } from '../utils/Colors'
 import { Location_ICO } from '../utils/icons'
 import firestore from '@react-native-firebase/firestore';
 import { AppContext } from '../contexts/AppProvider'
+import { useNavigation } from '@react-navigation/native'
 
 
 const NotificationItem = ({ item }) => {
 
   const { user } = useContext(AppContext)
 
+  const navigation = useNavigation()
 
   const [status, setStatus] = useState(item?.status)
 
@@ -19,11 +21,11 @@ const NotificationItem = ({ item }) => {
     await firestore().collection('Notifications')
       .doc(item.id)
       .update({
-        status: 'accepted',
+        status: 'chat_initiated',
       })
 
     await startChat()
-    setStatus('accepted')
+    setStatus('chat_initiated')
   }
 
   const startChat = async () => {
@@ -31,13 +33,39 @@ const NotificationItem = ({ item }) => {
     await firestore()
       .collection('Chats')
       .add({
-        users: [user.id, item?.book?.uploadedBy.id],
+        users: [user.id, item?.from],
         type: 'request',
         toUser: item?.book?.uploadedBy,
         timeStamp: new Date()
       })
-      .then(() => {
+      .then(async (doc) => {
         console.log('Book added!');
+        await firestore()
+          .collection('Chats')
+          .doc(doc.id)
+          .collection('Messages')
+          .add({
+            ids: [user.id, item?.from],
+            content: '',
+            type: 'req_accepted',
+            time: new Date()
+          })
+          .then(() => {
+
+            navigation.navigate('Messages', {
+              item: {
+                users: [user.id, item?.from],
+                type: 'request',
+                toUser: item?.book?.uploadedBy,
+                timeStamp: new Date()
+              }
+            })
+          })
+
+          .catch((error) => {
+            console.log(error)
+
+          })
       }).catch(() => {
         Alert.alert('Error, Try again.')
       })
@@ -53,7 +81,7 @@ const NotificationItem = ({ item }) => {
   }
 
   return (
-    <View style={styles.container} >
+    <TouchableOpacity style={styles.container}  >
       <View style={styles.sub1}>
         <Text style={styles.grant}>Grant Request</Text>
         <Text style={styles.time}>{getTimeAgo(item?.timeStamp?.toDate())}</Text>
@@ -68,19 +96,19 @@ const NotificationItem = ({ item }) => {
       </View>
       {status == 'send' && <View style={styles.btnWrpr}>
         <TouchableOpacity onPress={onAccept} style={styles.accBtn}>
-          <Text style={styles.accept}>Accept Request</Text>
+          <Text style={styles.accept}>Let's Chat</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={onDecline} style={styles.decBtn}>
           <Text style={styles.decline}>Decline</Text>
         </TouchableOpacity>
       </View>}
       {
-        status == 'accepted' && <Text style={styles.accepted}>Accepted</Text>
+        status == 'chat_initiated' && <Text style={styles.accepted}>Chat Initiated</Text>
       }
       {
         status == 'declined' && <Text style={styles.declined}>Declined</Text>
       }
-    </View>
+    </TouchableOpacity>
   )
 }
 
@@ -143,7 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'blue',
     flex: 1,
     alignItems: 'center',
-    borderRadius: 10
+    borderRadius: 10,
   },
   accept: {
     color: 'white',

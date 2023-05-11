@@ -11,6 +11,7 @@ const SignUpScreen = ({ navigation }) => {
     const [userName, setUserName] = useState('')
     const [phNo, setPhNo] = useState('')
     const [name, setName] = useState('')
+    const [desc, setDesc] = useState('')
     const [pwd, setPwd] = useState('')
     const [confPwd, setConfPwd] = useState('')
 
@@ -46,8 +47,9 @@ const SignUpScreen = ({ navigation }) => {
                 email,
                 userName,
                 phNo,
-                name
-
+                name,
+                desc,
+                timestamp: new Date()
             })
             .then(() => {
                 console.log('User added!');
@@ -61,6 +63,10 @@ const SignUpScreen = ({ navigation }) => {
             <TextInputComp placeHolder={'User Name'} style={{ marginTop: 8 }} value={userName} onChangeText={(e) => setUserName(e)} />
             <TextInputComp placeHolder={'Phone Number'} style={{ marginTop: 8 }} value={phNo} onChangeText={(e) => setPhNo(e)} />
             <TextInputComp placeHolder={'Email Id'} style={{ marginTop: 8 }} value={email} onChangeText={(e) => setEmail(e)} />
+            <TextInputComp
+                placeHolder={'Description'} style={{ marginTop: 8, textAlignVertical: 'top' }} value={desc} onChangeText={(e) => setDesc(e)} multiline={true}
+                numberOfLines={4}
+            />
             <TextInputComp placeHolder={'Password'} style={{ marginTop: 8 }} value={pwd} onChangeText={(e) => setPwd(e)} />
             <TextInputComp placeHolder={'Confirm Password'} style={{ marginTop: 8 }} value={confPwd} onChangeText={(e) => setConfPwd(e)} />
 

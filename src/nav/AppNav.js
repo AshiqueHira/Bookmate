@@ -12,6 +12,7 @@ import BookDetailsScreen from '../screens/BookDetailsScreen';
 import AddBookScreen from '../screens/AddBookScreen';
 import ChatScreen from '../screens/ChatScreen';
 import MessageScreen from '../screens/MessageScreen';
+import EditProfile from '../screens/EditProfile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -26,6 +27,7 @@ const AppNav = () => {
       <Stack.Screen name="AddBook" component={AddBookScreen} />
       <Stack.Screen name="Chats" component={ChatScreen} />
       <Stack.Screen name="Messages" component={MessageScreen} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
     </Stack.Navigator>
   )
 }

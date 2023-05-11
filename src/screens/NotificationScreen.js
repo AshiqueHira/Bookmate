@@ -18,7 +18,7 @@ const NotificationScreen = () => {
     const tmpData = []
     await firestore()
       .collection('Notifications')
-      .where('to', '==', user.id)
+      .where('users', 'array-contains', user.id)
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach((doc) => {

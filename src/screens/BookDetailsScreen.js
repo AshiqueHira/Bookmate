@@ -39,6 +39,7 @@ const BookDetailsScreen = ({ route }) => {
         await firestore()
             .collection('Notifications')
             .add({
+                users: [uploadedBy.id, user.id],
                 to: uploadedBy.id,
                 from: user.id,
                 book: route.params.book,

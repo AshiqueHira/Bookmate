@@ -1719,6 +1719,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-17.4.1.tgz#6558cea4c4a6ee7d25083bcfdd9de3bc675b4f33"
   integrity sha512-Eiw/FXW7IaxzMQCstOFjckjBFsI5gqy9fBUNaH1halBTSYJD8wvp86aso4z+CWGDoy4oP88hM+hYItIUEapXDQ==
 
+"@react-native-menu/menu@^0.7.3":
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/@react-native-menu/menu/-/menu-0.7.3.tgz#ac4c61c10c75859acc4687e527939c23304e7637"
+  integrity sha512-weevTwqG6DTQzhy1QimvXN5hCx3QirrMgMvHSN5KmxRhGivgroREUFyQR2CGmnEB6A4sqy0iqRgop1sL4lYQ/w==
+
 "@react-native/assets@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@react-native/assets/-/assets-1.0.0.tgz#c6f9bf63d274bafc8e970628de24986b30a55c8e"

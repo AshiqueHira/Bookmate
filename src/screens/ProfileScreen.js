@@ -5,7 +5,7 @@ import auth from '@react-native-firebase/auth';
 import { GIFT_ICO, PROFILE_ICO, STAR_ICO, WALLET_ICO } from '../utils/icons';
 import Header from '../components/Header';
 import { AppContext } from '../contexts/AppProvider';
-import { BLACK } from '../utils/Colors';
+import { BG, BLACK } from '../utils/Colors';
 import { useIsFocused } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import BookItem from '../components/BookItem';
@@ -31,14 +31,14 @@ const ProfileScreen = () => {
         setBooks(tmpBooks)
     }
 
-    const onDelete=(id)=>{
+    const onDelete = (id) => {
         Alert.alert('Delete', 'Do you want to delete this book?', [
             {
                 text: 'No',
                 onPress: () => console.log('Cancel Pressed'),
                 style: 'cancel',
             },
-            { text: 'Yes', onPress:()=> deleteBook(id) },
+            { text: 'Yes', onPress: () => deleteBook(id) },
         ]);
     }
 
@@ -57,8 +57,8 @@ const ProfileScreen = () => {
         getAllBooks()
     }, [isFocussed])
     return (
-        <ScrollView>
-            <Header label={user.name} />
+        <ScrollView style={styles.container} >
+            <Header label={user.name} from='profile' />
             {/* <Btn onPress={() => auth().signOut()}title='Signout' /> */}
 
             <View style={styles.sub} >
@@ -80,8 +80,8 @@ const ProfileScreen = () => {
             </View>
             <View style={styles.sub1} >
                 <Text style={styles.name}>{user.name}</Text>
-                <Text style={styles.userName}>@{user.name}</Text>
-                <Text style={styles.about}>I find joy in discovering new authors and literary genres, from classic literature and i really loves to read a lot. I used to share my books... Read more</Text>
+                <Text style={styles.userName}>@{user.userName}</Text>
+                <Text style={styles.about}>{user.desc}</Text>
             </View>
             <View style={styles.sub1} >
                 <Text style={styles.feed}>Feed</Text>
@@ -94,7 +94,9 @@ const ProfileScreen = () => {
 export default ProfileScreen
 
 const styles = StyleSheet.create({
-
+    container: {
+        backgroundColor: BG
+    },
     sub: {
         padding: 15,
         flexDirection: 'row',

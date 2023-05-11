@@ -8,6 +8,7 @@ const ChatItem = ({ item }) => {
 
     const navigation = useNavigation()
 
+    
     return (
         <TouchableOpacity onPress={() => navigation.navigate('Messages', { item })} style={styles.container}>
             <Image source={PROFILE_ICO} style={styles.img} />

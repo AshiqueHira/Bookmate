@@ -12,8 +12,9 @@ import Star from '../assets/icons/star.png'
 import AddPic from '../assets/icons/add_pic.png'
 import Gift from '../assets/icons/gift.png'
 import Wallet from '../assets/icons/wallet.png'
+import Menu from '../assets/icons/menu.png'
+import ProfileEdit from '../assets/icons/edit_profile.png'
 
-export const CHAT_ICO = Chat
 export const PLUS_ICO = Plus
 export const Location_ICO = Location
 export const Recomendation_ICO = Recomendation
@@ -27,3 +28,6 @@ export const STAR_ICO = Star
 export const ADD_PIC = AddPic
 export const GIFT_ICO = Gift
 export const WALLET_ICO = Wallet
+export const PROFILE_EDIT_ICO = ProfileEdit
+export const MENU_ICO = Menu
+export const CHAT_ICO = Chat

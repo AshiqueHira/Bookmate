@@ -1,13 +1,13 @@
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import firestore from '@react-native-firebase/firestore';
 import { AppContext } from '../contexts/AppProvider';
-import { PROFILE_ICO } from '../utils/icons';
+import { MENU_ICO, PROFILE_ICO } from '../utils/icons';
 import Header from '../components/Header';
 import MessageItem from '../components/MessageItem';
 import { BG, BLACK, SEC_BG } from '../utils/Colors';
 import ChatBtmTab from '../components/ChatBtmTab';
-
+import { MenuView } from '@react-native-menu/menu';
 
 const MessageScreen = ({ route }) => {
 
@@ -47,8 +47,50 @@ const MessageScreen = ({ route }) => {
             <View style={styles.txtWrpr}>
                 <Text style={styles.name}>{item?.toUser?.name}</Text>
             </View>
+            <View style={{ flex: 1 }} />
+            <MenuBtn />
         </View>
     )
+
+    const MenuBtn = () => {
+        return (
+            <MenuView
+                title="Menu Title"
+                onPressAction={({ nativeEvent }) => {
+                    console.warn(JSON.stringify(nativeEvent));
+                }}
+                
+                actions={[
+                    {
+                        id: 'add',
+                        titleColor: BLACK,
+                        title: 'Book Send',
+
+                    },
+                    {
+                        id: 'share',
+                        title: 'Book Recieved',
+                        titleColor: BLACK,
+
+                    },
+                    {
+                        id: 'destructive',
+                        title: 'Report Issue',
+                        titleColor: BLACK,
+                    },
+                ]}
+            // shouldOpenOnLongPress={true}
+            >
+                <View>
+                    <Image source={MENU_ICO} style={styles.menu} />
+                </View>
+            </MenuView>
+            // <TouchableOpacity>
+            //     <Image source={MENU_ICO} style={styles.menu} />
+            // </TouchableOpacity>
+        )
+    }
+
     return (
         <View style={styles.container} >
             <Header />
@@ -79,12 +121,17 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
 
     },
+
     header: {
         padding: 10,
         flexDirection: "row",
         alignItems: 'center',
         borderBottomWidth: 5,
         borderBottomColor: SEC_BG
+    },
+    menu: {
+        height: 30,
+        width: 20
     },
     img: {
         width: 50,

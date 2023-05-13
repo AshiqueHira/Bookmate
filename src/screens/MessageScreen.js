@@ -1,4 +1,4 @@
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import firestore from '@react-native-firebase/firestore';
 import { AppContext } from '../contexts/AppProvider';
@@ -13,10 +13,115 @@ const MessageScreen = ({ route }) => {
 
     const { item } = route.params ?? {}
 
+
     const { user } = useContext(AppContext)
     const [chats, setChats] = useState([])
-
+    const [notification, setNotfifcation] = useState({ users: [] })
     // console.log(coach, 'phuy')
+
+
+
+
+
+    const ProfilePic = () => (
+        <Image source={PROFILE_ICO} style={styles.profImg} />
+    )
+    const Header = () => (
+        <View style={styles.header} >
+            <Image source={PROFILE_ICO} style={styles.img} />
+            <View style={styles.txtWrpr}>
+                <Text style={styles.name}>{item?.toUser?.name}</Text>
+            </View>
+            <View style={{ flex: 1 }} />
+            {notification && <MenuBtn />}
+        </View>
+    )
+
+    const MenuBtn = () => {
+        return (
+            <MenuView
+                title="Menu Title"
+                onPressAction={({ nativeEvent }) => {
+                    console.warn(JSON.stringify(nativeEvent));
+                    onMenuItemClick(nativeEvent.event)
+                }}
+
+                actions={[
+                    (notification?.users[0] == user.id && {
+                        id: 'send',
+                        titleColor: 'white',
+                        title: 'Book Send',
+
+                    }),
+                    (notification?.users[0] != user.id && [{
+                        id: 'recieved',
+                        title: 'Book Recieved',
+                        titleColor: 'white',
+
+                    }]),
+                    // {
+                    //     id: 'destructive',
+                    //     title: 'Report Issue',
+                    //     titleColor: 'white',
+                    // },
+                ]}
+            // shouldOpenOnLongPress={true}
+            >
+                <View>
+                    <Image source={MENU_ICO} style={styles.menu} />
+                </View>
+            </MenuView>
+            // <TouchableOpacity>
+            //     <Image source={MENU_ICO} style={styles.menu} />
+            // </TouchableOpacity>
+        )
+    }
+
+    const getNotification = async () => {
+        let not
+        await firestore().collection('Notifications')
+            .doc(item.notificationId)
+            .get()
+            .then((doc) => {
+                not = ({ id: doc.id, ...doc.data() })
+
+            })
+        setNotfifcation(not)
+
+    }
+
+
+    const onMenuItemClick = async (event) => {
+        if (notification.type == 'grant') {
+            await firestore().collection('Notifications')
+                .doc(item.notificationId)
+                .update({
+                    ...(event == 'send' && { send: true }),
+                    ...(event == 'recieved' && { recieved: true })
+                })
+                .then(async () => {
+                    await firestore()
+                        .collection('Chats')
+                        .doc(item.id)
+                        .collection('Messages')
+                        .add({
+                            ids: item.users,
+                            content: '',
+                            ...(event == 'send' && { type: 'send' }),
+                            ...(event == 'recieved' && { type: 'received' }),
+                            time: new Date()
+                        })
+                })
+                .then((doc) => {
+
+                    Alert.alert('Updated')
+
+
+                })
+
+        }
+
+    }
 
     useEffect(() => {  // to get chats from db
         const subscriber = firestore()
@@ -38,58 +143,9 @@ const MessageScreen = ({ route }) => {
         return () => subscriber();
     }, []);
 
-    const ProfilePic = () => (
-        <Image source={PROFILE_ICO} style={styles.profImg} />
-    )
-    const Header = () => (
-        <View style={styles.header} >
-            <Image source={PROFILE_ICO} style={styles.img} />
-            <View style={styles.txtWrpr}>
-                <Text style={styles.name}>{item?.toUser?.name}</Text>
-            </View>
-            <View style={{ flex: 1 }} />
-            <MenuBtn />
-        </View>
-    )
-
-    const MenuBtn = () => {
-        return (
-            <MenuView
-                title="Menu Title"
-                onPressAction={({ nativeEvent }) => {
-                    console.warn(JSON.stringify(nativeEvent));
-                }}
-                
-                actions={[
-                    {
-                        id: 'add',
-                        titleColor: BLACK,
-                        title: 'Book Send',
-
-                    },
-                    {
-                        id: 'share',
-                        title: 'Book Recieved',
-                        titleColor: BLACK,
-
-                    },
-                    {
-                        id: 'destructive',
-                        title: 'Report Issue',
-                        titleColor: BLACK,
-                    },
-                ]}
-            // shouldOpenOnLongPress={true}
-            >
-                <View>
-                    <Image source={MENU_ICO} style={styles.menu} />
-                </View>
-            </MenuView>
-            // <TouchableOpacity>
-            //     <Image source={MENU_ICO} style={styles.menu} />
-            // </TouchableOpacity>
-        )
-    }
+    useEffect(() => {
+        getNotification()
+    }, [])
 
     return (
         <View style={styles.container} >

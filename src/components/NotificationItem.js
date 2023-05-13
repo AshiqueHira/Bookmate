@@ -8,7 +8,8 @@ import { AppContext } from '../contexts/AppProvider'
 import { useNavigation } from '@react-navigation/native'
 
 
-const NotificationItem = ({ item }) => {
+const NotificationItem = ({ item, setShowBooks }) => {
+
 
   const { user } = useContext(AppContext)
 
@@ -16,7 +17,10 @@ const NotificationItem = ({ item }) => {
 
   const [status, setStatus] = useState(item?.status)
 
+
   const onAccept = async () => {
+
+    if (item.type == 'swap' && !item.swapBy) return Alert.alert('Select a book to continue with chat')
 
     await firestore().collection('Notifications')
       .doc(item.id)
@@ -36,6 +40,7 @@ const NotificationItem = ({ item }) => {
         users: [user.id, item?.from],
         type: 'request',
         toUser: item?.book?.uploadedBy,
+        notificationId: item.id,
         timeStamp: new Date()
       })
       .then(async (doc) => {
@@ -80,6 +85,8 @@ const NotificationItem = ({ item }) => {
     setStatus('declined')
   }
 
+
+
   return (
     <TouchableOpacity style={styles.container}  >
       <View style={styles.sub1}>
@@ -98,6 +105,9 @@ const NotificationItem = ({ item }) => {
         <TouchableOpacity onPress={onAccept} style={styles.accBtn}>
           <Text style={styles.accept}>Let's Chat</Text>
         </TouchableOpacity>
+        {item.type == 'swap' && <TouchableOpacity disabled={item.swapBy ? true : false} onPress={() => setShowBooks(item.id)} style={[styles.accBtn, { backgroundColor: 'green' }]}>
+          <Text style={styles.accept}>{item.swapBy ? 'Book Selected' : 'Select a book'}</Text>
+        </TouchableOpacity>}
         <TouchableOpacity onPress={onDecline} style={styles.decBtn}>
           <Text style={styles.decline}>Decline</Text>
         </TouchableOpacity>
@@ -105,6 +115,7 @@ const NotificationItem = ({ item }) => {
       {
         status == 'chat_initiated' && <Text style={styles.accepted}>Chat Initiated</Text>
       }
+
       {
         status == 'declined' && <Text style={styles.declined}>Declined</Text>
       }
@@ -191,6 +202,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 18,
     alignSelf: 'flex-end'
+  },
+  letChat: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: 'green',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   declined: {
     color: 'red',

@@ -1,5 +1,5 @@
-import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext } from 'react'
+import { Alert, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../components/Header'
 import { BG, BLACK, SEC_TEXT } from '../utils/Colors'
 import { WIDTH } from '../utils/constants'
@@ -8,7 +8,7 @@ import { ddmmyyy } from '../helpers/ddmmyyyy'
 import firestore from '@react-native-firebase/firestore';
 import { AppContext } from '../contexts/AppProvider'
 
-const BookDetailsScreen = ({ route }) => {
+const BookDetailsScreen = ({ route, navigation }) => {
 
     const { email,
         name,
@@ -19,23 +19,61 @@ const BookDetailsScreen = ({ route }) => {
         dsc,
         img,
         timeStamp,
-        uploadedBy
+        uploadedBy,
+        recomendations,
+        id
     } = route.params.book
 
-    const { user } = useContext(AppContext)
 
-    const onRequestPress = () => {
-        Alert.alert('New Request', 'Do you want to request for this book?', [
+    const { user } = useContext(AppContext)
+    const [showRequestModal, setShowRequestModal] = useState(false)
+    const [recoms, setRecoms] = useState(recomendations?.length ?? [])
+    const [reviews, setReviews] = useState([])
+
+    const onRequestPress = (type) => {
+        Alert.alert('New Request', `Do you want to send ${type} request for this book?`, [
             {
                 text: 'No',
                 onPress: () => console.log('Cancel Pressed'),
                 style: 'cancel',
             },
-            { text: 'Yes', onPress: makeRequest },
+            { text: 'Yes', onPress: () => makeRequest(type) },
         ]);
     }
 
-    const makeRequest = async () => {
+    const onRecomendPress = async () => {
+        await firestore()
+            .collection('Books')
+            .doc(id)
+            .update({
+                recomendations: firestore.FieldValue.arrayUnion(user.id)
+            })
+            .then(() => {
+                setRecoms(prev => prev + 1)
+                Alert.alert('Recomended')
+            }).catch((err) => {
+                console.log(err)
+                Alert.alert('Error, Try again.')
+            })
+
+
+    }
+    const getReviews = async () => {
+        const tmpRevs = []
+        await firestore()
+            .collection('Books')
+            .doc(id)
+            .collection('Reviews')
+            .get()
+            .then(querySnapshot => {
+
+                querySnapshot.forEach(doc => {
+                    tmpRevs.push({ id: doc.id, ...doc.data() })
+                });
+            });
+        setReviews(tmpRevs)
+    }
+    const makeRequest = async (type) => {
         await firestore()
             .collection('Notifications')
             .add({
@@ -45,14 +83,23 @@ const BookDetailsScreen = ({ route }) => {
                 book: route.params.book,
                 status: 'send',
                 timeStamp: new Date(),
+                type,
             })
             .then(() => {
                 console.log('Book added!');
+                setShowRequestModal(false)
                 Alert.alert('Request Send')
             }).catch(() => {
                 Alert.alert('Error, Try again.')
             })
     }
+
+
+    useEffect(() => {
+        if (id) {
+            getReviews()
+        }
+    }, [id])
 
     return (
         <View style={styles.container} >
@@ -74,21 +121,63 @@ const BookDetailsScreen = ({ route }) => {
                     <Text style={styles.loc}>Location: {city}</Text>
 
                     <View style={styles.subWrpr}>
-                        <View>
+                        <TouchableOpacity onPress={onRecomendPress} disabled={recomendations.includes(user.id)} >
                             <Image style={styles.ico} source={Recomendation_ICO} />
-                            <Text style={styles.icoTxt}>226 Recommendations</Text>
-                        </View>
-                        <TouchableOpacity onPress={onRequestPress} style={{ alignItems: 'center' }} >
+                            <Text style={styles.icoTxt}>{recoms} Recommendations</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setShowRequestModal(true)} style={{ alignItems: 'center' }} >
                             <Image style={{ width: 30, height: 30 }} source={REQUEST_ICO} />
                             <Text style={styles.icoTxt}>Request</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.wrpr2}>
-                    <Text style={styles.dsc}>Description</Text>
+                    <View style={styles.dscWrpr}  >
+                        <Text style={styles.dsc}>Description </Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('Reviews', { state: { bookId: id, reviews } })} ><Text style={[styles.dsc, { marginLeft: 10, fontWeight: '700' }]} >Reviews {reviews.length}</Text></TouchableOpacity>
+                    </View>
+
                     <Text style={{ color: BLACK }} >{dsc}</Text>
                 </View>
             </ScrollView>
+
+
+            {/* Request Modal */}
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={showRequestModal}
+                onRequestClose={() => {
+                    setShowRequestModal(!showRequestModal);
+                }}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
+                            <Text style={styles.modalTitle}>Request for</Text>
+                            <TouchableOpacity onPress={() => setShowRequestModal(false)} >
+                                <Text style={styles.modalTitle}>x</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <TouchableOpacity onPress={() => onRequestPress('swap')}>
+                            <View style={styles.mBtn}>
+                                <Text style={styles.mBtnTxt}>Swap</Text>
+
+                            </View>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => onRequestPress('grant')} >
+                            <View style={styles.mBtn}>
+                                <Text style={styles.mBtnTxt}>Grant</Text>
+
+                            </View>
+                        </TouchableOpacity>
+
+                    </View>
+                </View>
+            </Modal>
+
+
 
         </View>
     )
@@ -175,6 +264,53 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         color: BLACK,
         fontSize: 13,
+    },
+    dscWrpr: {
+        flexDirection: 'row',
+        marginBottom: 10,
         borderBottomWidth: 1
+    },
+
+    // Modal
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    modalView: {
+        width: WIDTH / 1.5,
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 5,
+        padding: 10,
+        // alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    modalTitle: {
+        marginBottom: 15,
+        color: BLACK,
+        fontSize: 18,
+        fontWeight: "700"
+    },
+    mBtn: {
+        width: '100%',
+        borderWidth: 1,
+        borderColor: BLACK,
+        padding: 5,
+        borderRadius: 10,
+        marginBottom: 10
+    },
+    mBtnTxt: {
+        marginLeft: 10,
+        color: BLACK,
+        fontSize: 15
     }
 })

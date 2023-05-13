@@ -6,12 +6,12 @@ import { WIDTH } from '../utils/constants'
 import { useNavigation } from '@react-navigation/native'
 import { ddmmyyy } from '../helpers/ddmmyyyy'
 
-const BookItem = ({ book, onLongPress }) => {
+const BookItem = ({ book, onLongPress, onPress }) => {
 
     const navigation = useNavigation()
 
     return (
-        <TouchableOpacity onLongPress={() => onLongPress(book.id)} onPress={() => navigation.navigate('BookDetails', { book })} style={styles.container} >
+        <TouchableOpacity onLongPress={() => onLongPress(book.id)} onPress={() => { onPress ? onPress() : navigation.navigate('BookDetails', { book }) }} style={styles.container} >
             <Image source={{ uri: book.img }} style={styles.img} />
             <View style={styles.txtWrpr} >
                 <Text style={styles.date}>{book?.cat}  {ddmmyyy(book?.timeStamp?.toDate())}</Text>

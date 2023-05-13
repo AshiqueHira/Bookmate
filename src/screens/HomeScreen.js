@@ -36,7 +36,7 @@ const HomeScreen = () => {
         <FlatList
             ListHeaderComponent={<Header label='Bookmate' from='home' />}
             data={books}
-            renderItem={({ item }) => <BookItem book={item} />}
+            renderItem={({ item }) => <BookItem book={item} onLongPress={() => { }} />}
             style={styles.container}
         />
     )

@@ -48,7 +48,7 @@ const Header = ({ label, from }) => {
         <View style={styles.container}>
             <Text style={styles.label} >{label}</Text>
             {
-                (from == 'home' || from == 'search' || from == 'bookDetails') && <ChatAndPlus />
+                (from == 'home' || from == 'search' || from == 'bookDetails' || from == 'reviews') && <ChatAndPlus />
 
             }
             {

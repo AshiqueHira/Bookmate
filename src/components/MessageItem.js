@@ -12,8 +12,21 @@ const MessageItem = ({ chat }) => {
     const from = user.id
 
     if (type == 'req_accepted') return (
-        <View style={{ ...styles.acceptContainer, }} >
+        <View style={{ ...styles.acceptContainer, marginVertical: 5 }} >
             <Text style={styles.req_text}>{'Request Accepted'}</Text>
+            {/* <Text style={styles.date}>{getTimeAgo(chat?.time?.toDate())}</Text> */}
+        </View>
+    )
+
+    if (type == 'send') return (
+        <View style={{ ...styles.acceptContainer,  marginVertical: 5}} >
+            <Text style={styles.req_text}>{'Book Send'}</Text>
+            {/* <Text style={styles.date}>{getTimeAgo(chat?.time?.toDate())}</Text> */}
+        </View>
+    )
+    if (type == 'recieved') return (
+        <View style={{ ...styles.acceptContainer, marginVertical: 5 }} >
+            <Text style={styles.req_text}>{'Book Recieved'}</Text>
             {/* <Text style={styles.date}>{getTimeAgo(chat?.time?.toDate())}</Text> */}
         </View>
     )
@@ -42,7 +55,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: SEC_BG,
         color: BLACK,
-        fontSize:12
+        fontSize: 12
     },
     container: {
         marginHorizontal: 10,

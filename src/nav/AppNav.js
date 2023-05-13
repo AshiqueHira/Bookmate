@@ -13,6 +13,7 @@ import AddBookScreen from '../screens/AddBookScreen';
 import ChatScreen from '../screens/ChatScreen';
 import MessageScreen from '../screens/MessageScreen';
 import EditProfile from '../screens/EditProfile';
+import ReviewsScreens from '../screens/ReviewsScreens';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -28,6 +29,7 @@ const AppNav = () => {
       <Stack.Screen name="Chats" component={ChatScreen} />
       <Stack.Screen name="Messages" component={MessageScreen} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen name="Reviews" component={ReviewsScreens} />
     </Stack.Navigator>
   )
 }

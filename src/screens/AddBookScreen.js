@@ -65,6 +65,7 @@ const AddBookScreen = ({ navigation }) => {
                 town,
                 dsc,
                 img: imgUrl,
+                recomendations: [],
                 timeStamp: new Date()
             })
             .then(() => {

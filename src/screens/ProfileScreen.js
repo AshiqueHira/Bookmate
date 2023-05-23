@@ -66,15 +66,15 @@ const ProfileScreen = () => {
                 <View style={styles.wrpr} >
                     <View style={styles.wrpr1} >
                         <Image style={styles.img} source={WALLET_ICO} />
-                        <Text style={styles.text} >10{'\n'}Swaps </Text>
+                        <Text style={styles.text} >{user.swap ?? 0}{'\n'}Swaps </Text>
                     </View>
                     <View style={styles.wrpr1} >
                         <Image style={styles.img} source={GIFT_ICO} />
-                        <Text style={styles.text} >10{'\n'}Donations </Text>
+                        <Text style={styles.text} >{user.grant ?? 0}{'\n'}Donations </Text>
                     </View>
                     <View style={styles.wrpr1} >
                         <Image style={styles.img} source={STAR_ICO} />
-                        <Text style={styles.text} >10{'\n'}Trust Points </Text>
+                        <Text style={styles.text} >{user.trustPoint}{'\n'}Trust Points </Text>
                     </View>
                 </View>
             </View>

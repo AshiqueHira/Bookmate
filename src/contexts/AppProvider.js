@@ -22,10 +22,10 @@ const AppProvider = props => {
             .get()
             .then(querySnapshot => {
                 querySnapshot.forEach((doc) => {
-                    setUser({ id: doc.id, ...doc.data() })
+                    setUser({ id: doc.id, ...doc.data(), trustPoint: 3 * doc.data().swap ?? 0 + doc.data().grant ?? 0 })
                 })
             });
-       
+
     }
 
 

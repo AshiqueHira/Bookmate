@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import Header from '../components/Header'
 import { BG, BLACK, SEC_TEXT } from '../utils/Colors'
 import { WIDTH } from '../utils/constants'
-import { Recomendation_ICO, REQUEST_ICO, STAR_ICO } from '../utils/icons'
+import { Recomendation_ICO, REQUEST_ICO, REVIEW_ICO, STAR_ICO } from '../utils/icons'
 import { ddmmyyy } from '../helpers/ddmmyyyy'
 import firestore from '@react-native-firebase/firestore';
 import { AppContext } from '../contexts/AppProvider'
@@ -27,9 +27,8 @@ const BookDetailsScreen = ({ route, navigation }) => {
 
     const { user } = useContext(AppContext)
     const [showRequestModal, setShowRequestModal] = useState(false)
-    const [recoms, setRecoms] = useState(recomendations?.length ?? [])
+    const [recoms, setRecoms] = useState(recomendations ?? [])
     const [reviews, setReviews] = useState([])
-
     const onRequestPress = (type) => {
         Alert.alert('New Request', `Do you want to send ${type} request for this book?`, [
             {
@@ -49,8 +48,7 @@ const BookDetailsScreen = ({ route, navigation }) => {
                 recomendations: firestore.FieldValue.arrayUnion(user.id)
             })
             .then(() => {
-                setRecoms(prev => prev + 1)
-                Alert.alert('Recomended')
+                setRecoms([...recomendations, user.id])
             }).catch((err) => {
                 console.log(err)
                 Alert.alert('Error, Try again.')
@@ -84,6 +82,7 @@ const BookDetailsScreen = ({ route, navigation }) => {
                 status: 'send',
                 timeStamp: new Date(),
                 type,
+                ...(type == 'swap' && { swapScore: 0 })
             })
             .then(() => {
                 console.log('Book added!');
@@ -103,7 +102,8 @@ const BookDetailsScreen = ({ route, navigation }) => {
 
     return (
         <View style={styles.container} >
-            <Header label='Bookmate' from='bookDetails' />
+            <Header label='Bookmate' from='bookDetails' right={uploadedBy.id == user.id ?
+                <TouchableOpacity onPress={() => navigation.navigate('AddBook', { book: route.params.book })}><Image source={REVIEW_ICO} style={styles.editIco} /></TouchableOpacity> : null} />
 
             <ScrollView>
                 <View style={styles.profWrpr} >
@@ -121,14 +121,14 @@ const BookDetailsScreen = ({ route, navigation }) => {
                     <Text style={styles.loc}>Location: {city}</Text>
 
                     <View style={styles.subWrpr}>
-                        <TouchableOpacity onPress={onRecomendPress} disabled={recomendations.includes(user.id)} >
+                        <TouchableOpacity onPress={onRecomendPress} disabled={recoms.includes(user.id)} >
                             <Image style={styles.ico} source={Recomendation_ICO} />
-                            <Text style={styles.icoTxt}>{recoms} Recommendations</Text>
+                            <Text style={styles.icoTxt}>{recoms.length} Recommendations</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setShowRequestModal(true)} style={{ alignItems: 'center' }} >
+                        {user.id != uploadedBy.id && <TouchableOpacity onPress={() => setShowRequestModal(true)} style={{ alignItems: 'center' }} >
                             <Image style={{ width: 30, height: 30 }} source={REQUEST_ICO} />
                             <Text style={styles.icoTxt}>Request</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity>}
                     </View>
                 </View>
                 <View style={styles.wrpr2}>
@@ -190,6 +190,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: BG,
 
+
+    },
+    editIco: {
+        width: 20,
+        height: 20
     },
     profWrpr: {
         marginTop: 18,

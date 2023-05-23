@@ -12,20 +12,21 @@ import auth from '@react-native-firebase/auth';
 import Btn from '../components/Btn'
 import { AppContext } from '../contexts/AppProvider'
 
-const AddBookScreen = ({ navigation }) => {
+const AddBookScreen = ({ navigation, route }) => {
 
     const { user } = useContext(AppContext)
+    const { book } = route.params
 
 
     const { email } = auth().currentUser
 
     const [img, setImg] = useState('')
-    const [name, setName] = useState('')
-    const [author, setAuthor] = useState('')
-    const [cat, setCat] = useState('')
-    const [city, setCity] = useState('')
-    const [town, setTown] = useState('')
-    const [dsc, setDsc] = useState('')
+    const [name, setName] = useState(book?.name ?? '')
+    const [author, setAuthor] = useState(book?.author ?? '')
+    const [cat, setCat] = useState(book?.cat ?? '')
+    const [city, setCity] = useState(book?.city ?? '')
+    const [town, setTown] = useState(book?.town ?? '')
+    const [dsc, setDsc] = useState(book?.dsc ?? '')
     const [loading, setLoading] = useState(false)
 
     const picSelecter = async () => {
@@ -78,17 +79,54 @@ const AddBookScreen = ({ navigation }) => {
         setLoading(false)
     }
 
+    const updateToDb = async () => {
+
+        if ([name, author, cat, city, town, dsc].includes('')) return Alert.alert('Fill all fields.')
+
+        setLoading(true)
+        let imgUrl
+        if (img) {
+            imgUrl = await uploadImg()
+        }
+        await firestore()
+            .collection('Books')
+            .doc(book.id)
+            .update({
+                name,
+                author,
+                cat,
+                city,
+                town,
+                dsc,
+                img: imgUrl ?? book.img,
+            })
+            .then(() => {
+                console.log('Book Updated!');
+                navigation.goBack()
+            }).catch(() => {
+                Alert.alert('Error, Try again.')
+            })
+
+        setLoading(false)
+    }
+
     return (
         <ScrollView style={styles.container}  >
-            <Header label='Upload Book' from='addBook' />
+            <Header label={book ? 'Update' : 'Upload Book'} from='addBook' />
             {img ?
                 <TouchableOpacity onPress={picSelecter} style={styles.addWrpr} >
                     <Image source={{ uri: img }} style={styles.addWrpr} />
-                </TouchableOpacity> :
-                <TouchableOpacity onPress={picSelecter} style={styles.addWrpr} >
-                    <Image source={ADD_PIC} style={styles.ico} />
-                    <Text style={{ color: 'gray' }} >Upload photo of your book</Text>
-                </TouchableOpacity>}
+                </TouchableOpacity>
+                :
+                book
+                    ? <TouchableOpacity onPress={picSelecter} style={styles.addWrpr} >
+                        <Image source={{ uri: book.img }} style={styles.addWrpr} />
+                    </TouchableOpacity>
+                    :
+                    <TouchableOpacity onPress={picSelecter} style={styles.addWrpr} >
+                        <Image source={ADD_PIC} style={styles.ico} />
+                        <Text style={{ color: 'gray' }} >Upload photo of your book</Text>
+                    </TouchableOpacity>}
             <View style={styles.wrpr} >
                 <Text style={styles.label} >Name of the Book</Text>
                 <TextInputComp value={name} onChangeText={(e) => setName(e)} />
@@ -107,7 +145,7 @@ const AddBookScreen = ({ navigation }) => {
 
                 <Text style={styles.label} >Description</Text>
                 <TextInputComp value={dsc} onChangeText={(e) => setDsc(e)} />
-                <Btn title={loading ? 'Loading...' : 'Upload'} onPress={saveToDb} disabled={loading} containerStyle={{ marginTop: 10 }} />
+                <Btn title={loading ? 'Loading...' : book ? 'Update' : 'Upload'} onPress={() => book ? updateToDb() : saveToDb()} disabled={loading} containerStyle={{ marginTop: 10 }} />
             </View>
         </ScrollView>
     )

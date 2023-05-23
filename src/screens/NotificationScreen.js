@@ -34,11 +34,11 @@ const NotificationScreen = () => {
     setLoading(false)
   }
 
-  const getAllBooks = async () => {
+  const getAllBooks = async (id) => {
     let tmpBooks = []
     await firestore()
       .collection('Books')
-      .where('uploadedBy.id', '==', user.id)
+      .where('uploadedBy.id', '==', showBooks.opId)
       .get()
       .then(querySnapshot => {
 
@@ -53,7 +53,7 @@ const NotificationScreen = () => {
   const onSelectBook = async (book) => {
     await firestore()
       .collection('Notifications')
-      .doc(showBooks)
+      .doc(showBooks.notId)
       .update({
         swapBy: book
       })
@@ -67,6 +67,12 @@ const NotificationScreen = () => {
     getNotifications()
     getAllBooks()
   }, [isFocussed])
+  useEffect(() => {
+    if (showBooks) {
+      getAllBooks()
+    }
+  }, [showBooks])
+
 
   return (
     <>

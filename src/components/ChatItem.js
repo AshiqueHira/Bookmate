@@ -1,19 +1,21 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import { PROFILE_ICO } from '../utils/icons'
 import { BLACK, SEC_BG } from '../utils/Colors'
 import { useNavigation } from '@react-navigation/native'
+import { AppContext } from '../contexts/AppProvider'
+import { getUser } from '../helpers/getUser'
 
 const ChatItem = ({ item }) => {
 
     const navigation = useNavigation()
+    const { user } = useContext(AppContext)
 
-    
     return (
         <TouchableOpacity onPress={() => navigation.navigate('Messages', { item })} style={styles.container}>
             <Image source={PROFILE_ICO} style={styles.img} />
             <View style={styles.txtWrpr}>
-                <Text style={styles.name}>{item?.toUser?.name}</Text>
+                <Text style={styles.name}> {item.users[1] == user.id ? item?.toUser?.name : item.otherUser.name}</Text>
             </View>
         </TouchableOpacity>
     )

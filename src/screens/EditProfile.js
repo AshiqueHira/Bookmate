@@ -16,7 +16,7 @@ const EditProfile = ({ navigation }) => {
     const [userName, setUserName] = useState(user.userName)
     const [phNo, setPhNo] = useState(user.phNo)
     const [name, setName] = useState(user.name)
-    const [desc, setDesc] = useState('')
+    const [desc, setDesc] = useState(user.desc)
     const [confPwd, setConfPwd] = useState()
 
 
@@ -44,12 +44,16 @@ const EditProfile = ({ navigation }) => {
             <Header label='Settings' from='settings' />
 
             <View style={styles.sub} >
-                <TextInputComp placeHolder={'Name'} value={name} onChangeText={(e) => setName(e)}  />
+                <TextInputComp placeHolder={'Name'} value={name} onChangeText={(e) => setName(e)} />
                 <TextInputComp placeHolder={'User Name'} style={{ marginTop: 8 }} value={userName} onChangeText={(e) => setUserName(e)} />
                 <TextInputComp placeHolder={'Phone Number'} style={{ marginTop: 8 }} value={phNo} onChangeText={(e) => setPhNo(e)} />
                 <TextInputComp placeHolder={'Email Id'} style={{ marginTop: 8 }} value={email} onChangeText={(e) => setEmail(e)} />
                 <TextInputComp
-                    placeHolder={'Description'} style={{ marginTop: 8, textAlignVertical: 'top' }} value={desc} onChangeText={(e) => setDesc(e)} multiline={true}
+                    placeHolder={'Description'}
+                    style={{ marginTop: 8, textAlignVertical: 'top' }}
+                    value={desc}
+                    onChangeText={(e) => setDesc(e)}
+                    multiline={true}
                     numberOfLines={4}
                 />
                 <Btn onPress={saveToDb} title='Save' containerStyle={{ marginTop: 25, }} />

@@ -17,7 +17,7 @@ const MessageScreen = ({ route }) => {
     const { user } = useContext(AppContext)
     const [chats, setChats] = useState([])
     const [notification, setNotfifcation] = useState({ users: [] })
-    // console.log(coach, 'phuy')
+    console.log(notification, 'phuy')
 
 
 
@@ -30,14 +30,48 @@ const MessageScreen = ({ route }) => {
         <View style={styles.header} >
             <Image source={PROFILE_ICO} style={styles.img} />
             <View style={styles.txtWrpr}>
-                <Text style={styles.name}>{item?.toUser?.name}</Text>
+                <Text style={styles.name}> {item.users[1] == user.id ? item?.toUser?.name : item?.otherUser?.name}</Text>
             </View>
             <View style={{ flex: 1 }} />
             {notification && <MenuBtn />}
         </View>
     )
 
+
     const MenuBtn = () => {
+
+        const actions = []
+        if (notification.type == 'grant') {
+            if (notification?.users[0] == user.id) {
+                actions.push({
+                    id: 'send',
+                    titleColor: 'white',
+                    title: 'Book Send',
+                })
+            }
+
+            if (notification?.users[0] != user.id) {
+                actions.push({
+                    id: 'recieved',
+                    title: 'Book Recieved',
+                    titleColor: 'white',
+                })
+            }
+        }
+        if (notification.type == 'swap') {
+            actions.push({
+                id: 'send',
+                titleColor: 'white',
+                title: 'Book Send',
+            })
+            actions.push({
+                id: 'recieved',
+                title: 'Book Recieved',
+                titleColor: 'white',
+            })
+        }
+
+
         return (
             <MenuView
                 title="Menu Title"
@@ -46,25 +80,7 @@ const MessageScreen = ({ route }) => {
                     onMenuItemClick(nativeEvent.event)
                 }}
 
-                actions={[
-                    (notification?.users[0] == user.id && {
-                        id: 'send',
-                        titleColor: 'white',
-                        title: 'Book Send',
-
-                    }),
-                    (notification?.users[0] != user.id && [{
-                        id: 'recieved',
-                        title: 'Book Recieved',
-                        titleColor: 'white',
-
-                    }]),
-                    // {
-                    //     id: 'destructive',
-                    //     title: 'Report Issue',
-                    //     titleColor: 'white',
-                    // },
-                ]}
+                actions={actions}
             // shouldOpenOnLongPress={true}
             >
                 <View>
@@ -90,6 +106,14 @@ const MessageScreen = ({ route }) => {
 
     }
 
+    const updateSwap = async (id, type) => {
+        await firestore()
+            .collection('Users')
+            .doc(id)
+            .update({
+                [type]: firestore.FieldValue.increment(1)
+            })
+    }
 
     const onMenuItemClick = async (event) => {
         if (notification.type == 'grant') {
@@ -100,6 +124,11 @@ const MessageScreen = ({ route }) => {
                     ...(event == 'recieved' && { recieved: true })
                 })
                 .then(async () => {
+
+                    if (event == 'recieved') {
+                        await updateSwap(notification.users[0], 'grant')
+                    }
+
                     await firestore()
                         .collection('Chats')
                         .doc(item.id)
@@ -109,6 +138,42 @@ const MessageScreen = ({ route }) => {
                             content: '',
                             ...(event == 'send' && { type: 'send' }),
                             ...(event == 'recieved' && { type: 'received' }),
+                            time: new Date()
+                        })
+                })
+                .then((doc) => {
+
+                    Alert.alert('Updated')
+
+
+                })
+
+        }
+
+        if (notification?.type == 'swap') {
+            await firestore().collection('Notifications')
+                .doc(item.notificationId)
+                .update({
+                    ...(event == 'send' && user.id == notification.users[1] && { 'swapInitor.send': true }),
+                    ...(event == 'send' && user.id == notification.users[0] && { 'bookOwner.send': true }),
+                    ...(event == 'recieved' && user.id == notification.users[1] && { 'swapInitor.recieved': true }),
+                    ...(event == 'recieved' && user.id == notification.users[0] && { 'bookOwner.recieved': true }),
+                })
+                .then(async (doc) => {
+
+                    if (event == 'recieved') {
+                        await updateSwap(user.id, 'swap')
+                    }
+
+                    await firestore()
+                        .collection('Chats')
+                        .doc(item.id)
+                        .collection('Messages')
+                        .add({
+                            ids: item.users,
+                            content: '',
+                            ...(event == 'send' && { type: 'send' }),
+                            ...(event == 'recieved' && { type: 'recieved' }),
                             time: new Date()
                         })
                 })
@@ -135,7 +200,6 @@ const MessageScreen = ({ route }) => {
                     tempChats.push({ ...doc.data(), id: doc.id })
                 })
                 tempChats.sort((a, b) => { if (a.time.toDate() > b.time.toDate()) return -1 })
-                console.log(tempChats, 'ddd')
                 setChats(tempChats)
             });
 

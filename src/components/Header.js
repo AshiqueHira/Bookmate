@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 import Btn from './Btn'
 import auth from '@react-native-firebase/auth';
 
-const Header = ({ label, from }) => {
+const Header = ({ label, from ,right}) => {
 
     const navigation = useNavigation()
 
@@ -47,6 +47,7 @@ const Header = ({ label, from }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.label} >{label}</Text>
+            <View style={{flex:1}} />
             {
                 (from == 'home' || from == 'search' || from == 'bookDetails' || from == 'reviews') && <ChatAndPlus />
 
@@ -61,6 +62,7 @@ const Header = ({ label, from }) => {
                 titleStyle={{ fontSize: 10 }}
                 onPress={onSignOUt}
             />}
+            {right}
         </View>
     )
 }
@@ -74,7 +76,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 4,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        // justifyContent: 'space-between'
     },
     label: {
         color: BLACK,

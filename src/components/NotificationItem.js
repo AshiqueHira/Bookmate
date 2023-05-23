@@ -1,11 +1,12 @@
 import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { getTimeAgo } from '../helpers/getTimeAgo'
 import { BLACK } from '../utils/Colors'
 import { Location_ICO } from '../utils/icons'
 import firestore from '@react-native-firebase/firestore';
 import { AppContext } from '../contexts/AppProvider'
 import { useNavigation } from '@react-navigation/native'
+import { getUser } from '../helpers/getUser'
 
 
 const NotificationItem = ({ item, setShowBooks }) => {
@@ -16,6 +17,7 @@ const NotificationItem = ({ item, setShowBooks }) => {
   const navigation = useNavigation()
 
   const [status, setStatus] = useState(item?.status)
+  const [sendUser, setSendUser] = useState('')
 
 
   const onAccept = async () => {
@@ -34,12 +36,15 @@ const NotificationItem = ({ item, setShowBooks }) => {
 
   const startChat = async () => {
 
+    const otherUser = await getUser(item.from)
+
     await firestore()
       .collection('Chats')
       .add({
         users: [user.id, item?.from],
         type: 'request',
         toUser: item?.book?.uploadedBy,
+        otherUser,
         notificationId: item.id,
         timeStamp: new Date()
       })
@@ -62,7 +67,9 @@ const NotificationItem = ({ item, setShowBooks }) => {
                 users: [user.id, item?.from],
                 type: 'request',
                 toUser: item?.book?.uploadedBy,
-                timeStamp: new Date()
+                timeStamp: new Date(),
+                notificationId: item.id,
+                otherUser,
               }
             })
           })
@@ -85,7 +92,17 @@ const NotificationItem = ({ item, setShowBooks }) => {
     setStatus('declined')
   }
 
+  const getName = async () => {
+    let us = await getUser(item.users[1])
+    console.log(us)
+    if (us?.name) {
+      setSendUser(us.name)
+    }
+  }
 
+  useEffect(() => {
+    getName()
+  }, [])
 
   return (
     <TouchableOpacity style={styles.container}  >
@@ -95,23 +112,24 @@ const NotificationItem = ({ item, setShowBooks }) => {
       </View>
       <Text style={styles.title}>{item?.book?.name}</Text>
       <View>
-        <Text style={styles.author}>{item?.book?.author}</Text>
+        <Text style={styles.author}>{sendUser}</Text>
       </View>
       <View style={styles.subWrpr}>
         <Image style={styles.ico} source={Location_ICO} />
         <Text style={styles.txt}>{item?.book?.city}</Text>
       </View>
-      {status == 'send' && <View style={styles.btnWrpr}>
+      {status == 'send' && item.users[1] != user.id && <View style={styles.btnWrpr}>
         <TouchableOpacity onPress={onAccept} style={styles.accBtn}>
           <Text style={styles.accept}>Let's Chat</Text>
         </TouchableOpacity>
-        {item.type == 'swap' && <TouchableOpacity disabled={item.swapBy ? true : false} onPress={() => setShowBooks(item.id)} style={[styles.accBtn, { backgroundColor: 'green' }]}>
+        {item.type == 'swap' && <TouchableOpacity disabled={item.swapBy ? true : false} onPress={() => setShowBooks({opId:item.users[1],notId:item.id})} style={[styles.accBtn, { backgroundColor: 'green' }]}>
           <Text style={styles.accept}>{item.swapBy ? 'Book Selected' : 'Select a book'}</Text>
         </TouchableOpacity>}
         <TouchableOpacity onPress={onDecline} style={styles.decBtn}>
           <Text style={styles.decline}>Decline</Text>
         </TouchableOpacity>
       </View>}
+      {status == 'send' && item.users[1] == user.id && <Text style={styles.accepted}>Notification Send</Text>}
       {
         status == 'chat_initiated' && <Text style={styles.accepted}>Chat Initiated</Text>
       }

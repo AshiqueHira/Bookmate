@@ -19,7 +19,7 @@ const MessageItem = ({ chat }) => {
     )
 
     if (type == 'send') return (
-        <View style={{ ...styles.acceptContainer,  marginVertical: 5}} >
+        <View style={{ ...styles.acceptContainer, marginVertical: 5 }} >
             <Text style={styles.req_text}>{'Book Send'}</Text>
             {/* <Text style={styles.date}>{getTimeAgo(chat?.time?.toDate())}</Text> */}
         </View>

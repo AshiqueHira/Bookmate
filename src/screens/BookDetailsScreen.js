@@ -102,7 +102,7 @@ const BookDetailsScreen = ({ route, navigation }) => {
 
     return (
         <View style={styles.container} >
-            <Header label='Bookmate' from='bookDetails' right={uploadedBy.id == user.id ?
+            <Header label='Bookmate' from='bookDetails' right={uploadedBy?.id == user?.id ?
                 <TouchableOpacity onPress={() => navigation.navigate('AddBook', { book: route.params.book })}><Image source={REVIEW_ICO} style={styles.editIco} /></TouchableOpacity> : null} />
 
             <ScrollView>

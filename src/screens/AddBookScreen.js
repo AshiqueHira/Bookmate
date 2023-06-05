@@ -12,10 +12,12 @@ import auth from '@react-native-firebase/auth';
 import Btn from '../components/Btn'
 import { AppContext } from '../contexts/AppProvider'
 
+
+
 const AddBookScreen = ({ navigation, route }) => {
 
     const { user } = useContext(AppContext)
-    const { book } = route.params
+    const { book } = route.params ?? {}
 
 
     const { email } = auth().currentUser
@@ -102,7 +104,7 @@ const AddBookScreen = ({ navigation, route }) => {
             })
             .then(() => {
                 console.log('Book Updated!');
-                navigation.goBack()
+                navigation.replace('BottomNav')
             }).catch(() => {
                 Alert.alert('Error, Try again.')
             })

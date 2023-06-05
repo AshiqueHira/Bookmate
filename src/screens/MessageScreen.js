@@ -12,12 +12,11 @@ import { MenuView } from '@react-native-menu/menu';
 const MessageScreen = ({ route }) => {
 
     const { item } = route.params ?? {}
-
+console.log(item,'ituuuu')
 
     const { user } = useContext(AppContext)
     const [chats, setChats] = useState([])
     const [notification, setNotfifcation] = useState({ users: [] })
-    console.log(notification, 'phuy')
 
 
 
@@ -193,6 +192,7 @@ const MessageScreen = ({ route }) => {
             .collection('Chats')
             .doc(item.id)
             .collection('Messages')
+            .orderBy('time')
 
             .onSnapshot(documentSnapshot => {
                 const tempChats = []

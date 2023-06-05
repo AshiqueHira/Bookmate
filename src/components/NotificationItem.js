@@ -64,6 +64,7 @@ const NotificationItem = ({ item, setShowBooks }) => {
 
             navigation.navigate('Messages', {
               item: {
+                id: doc.id,
                 users: [user.id, item?.from],
                 type: 'request',
                 toUser: item?.book?.uploadedBy,
@@ -122,7 +123,7 @@ const NotificationItem = ({ item, setShowBooks }) => {
         <TouchableOpacity onPress={onAccept} style={styles.accBtn}>
           <Text style={styles.accept}>Let's Chat</Text>
         </TouchableOpacity>
-        {item.type == 'swap' && <TouchableOpacity disabled={item.swapBy ? true : false} onPress={() => setShowBooks({opId:item.users[1],notId:item.id})} style={[styles.accBtn, { backgroundColor: 'green' }]}>
+        {item.type == 'swap' && <TouchableOpacity disabled={item.swapBy ? true : false} onPress={() => setShowBooks({ opId: item.users[1], notId: item.id })} style={[styles.accBtn, { backgroundColor: 'green' }]}>
           <Text style={styles.accept}>{item.swapBy ? 'Book Selected' : 'Select a book'}</Text>
         </TouchableOpacity>}
         <TouchableOpacity onPress={onDecline} style={styles.decBtn}>

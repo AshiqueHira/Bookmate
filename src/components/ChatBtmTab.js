@@ -20,7 +20,7 @@ const ChatBtmTab = ({ item }) => {
             return Alert('Image upload failed.')
         }
 
-
+        console.log([user.id, ...item.users?.filter(a => a != user.id)],'ans123')
 
         setLoading(true)
 
@@ -29,7 +29,7 @@ const ChatBtmTab = ({ item }) => {
             .doc(item.id)
             .collection('Messages')
             .add({
-                ids: item.users,
+                ids: [user.id, ...item.users?.filter(a => a != user.id)],
                 content,
                 type,
                 time: new Date()
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     btn: {
         marginLeft: 10,
         width: 'auto',
-        borderWidth:1
+        borderWidth: 1
     },
     media: {
         width: 25,

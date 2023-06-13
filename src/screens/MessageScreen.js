@@ -12,7 +12,7 @@ import { MenuView } from '@react-native-menu/menu';
 const MessageScreen = ({ route }) => {
 
     const { item } = route.params ?? {}
-console.log(item,'ituuuu')
+    console.log(item, 'ituuuu')
 
     const { user } = useContext(AppContext)
     const [chats, setChats] = useState([])
@@ -192,7 +192,6 @@ console.log(item,'ituuuu')
             .collection('Chats')
             .doc(item.id)
             .collection('Messages')
-            .orderBy('time')
 
             .onSnapshot(documentSnapshot => {
                 const tempChats = []
@@ -217,7 +216,7 @@ console.log(item,'ituuuu')
             <FlatList
                 data={chats}
                 renderItem={({ item }) => <MessageItem key={item?.time?.toDate()?.toString()} chat={item} />}
-                extraData={chats}
+                extraData={chats.sort((a, b) => b?.time?.toDate() - a?.time?.toDate())}
                 showsVerticalScrollIndicator={false}
                 inverted
             />

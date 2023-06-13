@@ -30,8 +30,62 @@ const NotificationItem = ({ item, setShowBooks }) => {
         status: 'chat_initiated',
       })
 
+    // let alreadyChattedDocId = await checkIfAlreadyChatted()
+    // if (alreadyChattedDocId) {
+    //   await continueChat(alreadyChattedDocId)
+    // } else {
+    //   await startChat()
+
+    // }
     await startChat()
     setStatus('chat_initiated')
+  }
+
+  const continueChat = async (doc) => {
+    await firestore()
+      .collection('Chats')
+      .doc(doc.id)
+      .collection('Messages')
+      .add({
+        ids: [user.id, item?.from],
+        content: '',
+        type: 'req_accepted',
+        time: new Date()
+      })
+      .then(() => {
+
+        navigation.navigate('Messages', {
+          item: {
+            id: doc.id,
+            users: [user.id, item?.from],
+            type: 'request',
+            toUser: item?.book?.uploadedBy,
+            timeStamp: new Date(),
+            notificationId: item.id,
+            otherUser,
+          }
+        })
+      })
+
+      .catch((error) => {
+        console.log(error)
+
+      })
+  }
+
+  const checkIfAlreadyChatted = async () => {
+    let docId = false;
+    await firestore()
+      .collection('Chats')
+      .get()
+      .then(snap => {
+        snap.forEach(doc => {
+          if (doc.users.includes(user.id) && doc.users.includes(item.from)) {
+            docId = doc.id
+          }
+        })
+      })
+    return docId
   }
 
   const startChat = async () => {

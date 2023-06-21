@@ -38,7 +38,7 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.container} >
             <Text style={styles.title} >Login</Text>
             <TextInputComp placeHolder={'Email Id'} value={email} onChangeText={e => setEmail(e)} />
-            <TextInputComp placeHolder={'Password'} style={{ marginTop: 8 }} value={pwd} onChangeText={e => setPwd(e)} />
+            <TextInputComp placeHolder={'Password'} style={{ marginTop: 8 }} value={pwd} onChangeText={e => setPwd(e)} secureTextEntry={true} />
 
             <Btn title='Login' onPress={loginHandler} containerStyle={{ marginTop: 25 }} />
 

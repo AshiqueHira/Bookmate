@@ -67,8 +67,8 @@ const SignUpScreen = ({ navigation }) => {
                 placeHolder={'Description'} style={{ marginTop: 8, textAlignVertical: 'top' }} value={desc} onChangeText={(e) => setDesc(e)} multiline={true}
                 numberOfLines={4}
             />
-            <TextInputComp placeHolder={'Password'} style={{ marginTop: 8 }} value={pwd} onChangeText={(e) => setPwd(e)} />
-            <TextInputComp placeHolder={'Confirm Password'} style={{ marginTop: 8 }} value={confPwd} onChangeText={(e) => setConfPwd(e)} />
+            <TextInputComp placeHolder={'Password'} style={{ marginTop: 8 }} value={pwd} onChangeText={(e) => setPwd(e)} secureTextEntry={true} />
+            <TextInputComp placeHolder={'Confirm Password'} style={{ marginTop: 8 }} value={confPwd} onChangeText={(e) => setConfPwd(e)} secureTextEntry={true} />
 
             <Btn onPress={signUpHandler} title='Sign Up' containerStyle={{ marginTop: 25 }} />
 

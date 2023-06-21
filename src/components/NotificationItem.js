@@ -100,7 +100,8 @@ const NotificationItem = ({ item, setShowBooks }) => {
         toUser: item?.book?.uploadedBy,
         otherUser,
         notificationId: item.id,
-        timeStamp: new Date()
+        timeStamp: new Date(),
+        title:item.book.name??''
       })
       .then(async (doc) => {
         console.log('Book added!');
